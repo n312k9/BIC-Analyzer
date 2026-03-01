@@ -507,7 +507,9 @@ Rules: tech_compatibility max 6, challenges exactly 4 (High→Low), tips exactly
     if (!res.ok) { const e = await res.json(); throw new Error(e.error?.message || 'Request failed'); }
 
     const data   = await res.json();
-    const raw    = data.content.map(b => b.text || '').join('');
+    console.log(data);
+     alert("Open DevTools → Network → Response to see Gemini output.");
+     return;
     const cleaned = raw.trim().replace(/```json|```/g, '');
 
      const jsonStart = cleaned.indexOf('{');
