@@ -508,7 +508,18 @@ Rules: tech_compatibility max 6, challenges exactly 4 (High→Low), tips exactly
 
     const data   = await res.json();
     const raw    = data.content.map(b => b.text || '').join('');
-    const result = JSON.parse(raw.replace(/```json|```/g, '').trim());
+    const cleaned = raw.trim().replace(/```json|```/g, '');
+
+     const jsonStart = cleaned.indexOf('{');
+     const jsonEnd   = cleaned.lastIndexOf('}');
+     
+     if (jsonStart === -1 || jsonEnd === -1) {
+       throw new Error("Invalid AI response format");
+     }
+     
+     const safeJson = cleaned.substring(jsonStart, jsonEnd + 1);
+     
+     const result = JSON.parse(safeJson);
 
     // Track success
     const duration = ((Date.now() - startTime) / 1000).toFixed(1);
