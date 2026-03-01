@@ -506,10 +506,18 @@ Rules: tech_compatibility max 6, challenges exactly 4 (High→Low), tips exactly
 
     if (!res.ok) { const e = await res.json(); throw new Error(e.error?.message || 'Request failed'); }
 
-    const data   = await res.json();
-    console.log(data);
-     alert("Open DevTools → Network → Response to see Gemini output.");
-     return;
+    const data = await res.json();
+     const raw  = data.content[0].text;
+     
+     const cleaned = raw.trim().replace(/```json|```/g, '');
+     const jsonStart = cleaned.indexOf('{');
+     const jsonEnd   = cleaned.lastIndexOf('}');
+     
+     if (jsonStart === -1 || jsonEnd === -1) {
+       throw new Error("Invalid AI response format");
+     }
+     
+     const result = JSON.parse(cleaned.substring(jsonStart, jsonEnd + 1));
     const cleaned = raw.trim().replace(/```json|```/g, '');
 
      const jsonStart = cleaned.indexOf('{');
